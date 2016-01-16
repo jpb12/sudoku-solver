@@ -1,0 +1,53 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>Sudoku Solver</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<link rel="stylesheet" href="style.css" type="text/css"/>
+		<link rel="shortcut icon" href="sudoku.ico" type="image/x-icon" >
+		<script type="text/javascript" src="Libraries/jquery-2.1.1.js"></script>
+		<script type="text/javascript" src="Libraries/angular.js"></script>
+		<script type="text/javascript" src="main.js"></script>
+	</head>
+	<body ng-app="sudukoSolver" ng-controller="sudokoCtrl">
+		<h1>Sudoku Solver</h1>
+		<div class="buttons">
+			<button ng-click="solveMode = !solveMode">{{solveMode ? 'Automatic' : 'Manual'}}</button>
+			<button ng-if="solveMode && !isSudokuComplete()" ng-click="solveNextStep()">Solve Next Step</button>
+		</div>
+		<div class="container">
+			<div class="success" ng-if="isSudokuComplete()">Congratulations</div>
+			<div
+				ng-repeat="box in sudoku track by $index"
+				class="box"
+				ng-class="{
+					'edge-right': $index % 9 === 2 || $index % 9 === 5,
+					'edge-down': isEdgeDown($index)
+				}">
+				<span ng-if="box !== 0" class="number original">{{box}}</span>
+				<input
+					type="text"
+					maxlength="1"
+					ng-if="box === 0"
+					ng-attr-id="input{{$index}}"
+					class="number"
+					ng-class="{invalid: invalidAnswers.indexOf($index) !== -1}"
+					ng-model=answers[$index]
+					ng-change="validateInput()"
+					ng-keydown="onKeyDown($event, $index)">
+				</input>
+				<span ng-if="answers[$index] === '' && solveMode">
+					<span ng-if="possibleAnswers[$index].indexOf('1') !== -1" class="hint top">1</span>
+					<span ng-if="possibleAnswers[$index].indexOf('2') !== -1" class="hint top centre">2</span>
+					<span ng-if="possibleAnswers[$index].indexOf('3') !== -1" class="hint top right">3</span>
+					<span ng-if="possibleAnswers[$index].indexOf('4') !== -1" class="hint middle">4</span>
+					<span ng-if="possibleAnswers[$index].indexOf('5') !== -1" class="hint middle centre">5</span>
+					<span ng-if="possibleAnswers[$index].indexOf('6') !== -1" class="hint middle right">6</span>
+					<span ng-if="possibleAnswers[$index].indexOf('7') !== -1" class="hint bottom">7</span>
+					<span ng-if="possibleAnswers[$index].indexOf('8') !== -1" class="hint bottom centre">8</span>
+					<span ng-if="possibleAnswers[$index].indexOf('9') !== -1" class="hint bottom right">9</span>
+				<span>
+			</div>
+		</div>
+		<div class="output">{{output}}</div>
+	</body>
+</html>
